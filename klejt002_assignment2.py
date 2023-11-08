@@ -27,3 +27,9 @@ class Potion:
         self.name = name
         self.stat = stat
         self.boost = boost
+
+class Reagent:
+    def __init__(self, name, potency):
+        self.name = name
+        self.potency = potency
+
