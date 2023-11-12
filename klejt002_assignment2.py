@@ -2,17 +2,17 @@ from abc import ABC, abstractmethod
 
 class Alchemist:
     def __init__(self, attack, strength, defense, magic, ranged, necromancy, laboratory):
-        self.__attack = attack
-        self.__strength = strength
-        self.__defense = defense
-        self.__magic = magic
-        self.__ranged = ranged
-        self.__necromancy = necromancy
+        self.__attack = max(0, min(attack, 100))
+        self.__strength = max(0, min(strength, 100))
+        self.__defense = max(0, min(defense, 100))
+        self.__magic = max(0, min(magic, 100))
+        self.__ranged = max(0, min(ranged, 100))
+        self.__necromancy = max(0, min(necromancy, 100))
         self.__laboratory = laboratory
         self.__recipes = {}
 
     def getLaboratory(self):
-        pass
+        return self.__laboratory
     
     def getRecipes(self):
         return self.__recipes
