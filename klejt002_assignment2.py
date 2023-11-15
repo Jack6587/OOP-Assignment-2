@@ -11,13 +11,16 @@ from abc import ABC, abstractmethod
 
 class Alchemist:
     def __init__(self, attack, strength, defence, magic, ranged, necromancy, laboratory):
-        self.__attack = max(0, min(attack, 100))
-        self.__strength = max(0, min(strength, 100))
-        self.__defence = max(0, min(defence, 100))
-        self.__magic = max(0, min(magic, 100))
-        self.__ranged = max(0, min(ranged, 100))
-        self.__necromancy = max(0, min(necromancy, 100))
-
+        if not all(0 <= stat <= 100 for stat in [attack, strength, defence, magic, ranged, necromancy]):
+            raise ValueError("All stats must be between 0 and 100.")
+        
+        self.__attack = attack
+        self.__strength = strength
+        self.__defence = defence
+        self.__magic = magic
+        self.__ranged = ranged
+        self.__necromancy = necromancy
+        
         self.__laboratory = laboratory
         self.__recipes = {}
 
