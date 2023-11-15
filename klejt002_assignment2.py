@@ -49,11 +49,20 @@ class Laboratory:
     def mixPotion(self, name, type, stat, primaryIngredient, secondaryIngredient):
         pass
 
-    def addReagent(self):
-        pass
+    def addReagent(self, reagent, amount):
+        if isinstance(reagent, Herb):
+            self.__herbs.append((reagent, amount))
+        elif isinstance(reagent, Catalyst):
+            self.__catalysts.append((reagent, amount))
 
     def grabReagent(self, name):
-        pass
+        for herb, amount in self.__herbs:
+            if herb.getName() == name:
+                return herb, amount
+            
+        for catalyst, amount in self.__catalysts:
+            if catalyst.getName() == name:
+                return catalyst, amount
 
     def cleanHerbs(self):
         pass
