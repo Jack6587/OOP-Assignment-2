@@ -34,7 +34,7 @@ class Alchemist:
         pass
 
     def collectReagent(self, reagent, amount):
-        pass
+        self.__laboratory.addReagent(reagent, amount)
 
     def refineReagents(self):
         pass
@@ -65,10 +65,14 @@ class Laboratory:
                 return catalyst, amount
 
     def cleanHerbs(self):
-        pass
+        for h in range(len(self.__herbs)):
+            herb, amount = self.__herbs[h]
+            herb.refine()
 
     def refineCatalysts(self):
-        pass
+        for c in range(len(self.__catalysts)):
+            catalyst, amount = self.__catalyst[c]
+            catalyst.refine()
 
 class Potion(ABC):
     def __init__(self, name, stat, boost):
