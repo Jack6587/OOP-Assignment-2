@@ -1,3 +1,12 @@
+'''
+File: klejt002_assignment.py
+Description: This Python module reflects the functions of an RPG game. The main focus is that of an alchemist that belongs to a laboratory, who can mix and drink potions.
+Author: Jack Klenke
+StudentID: 110349473
+EmailID: klejt002
+This is my own work as defined by the University's Academic Misconduct Policy.
+'''
+
 from abc import ABC, abstractmethod
 
 class Alchemist:
@@ -8,6 +17,7 @@ class Alchemist:
         self.__magic = max(0, min(magic, 100))
         self.__ranged = max(0, min(ranged, 100))
         self.__necromancy = max(0, min(necromancy, 100))
+
         self.__laboratory = laboratory
         self.__recipes = {}
 
@@ -42,7 +52,16 @@ class Laboratory:
     def addReagent(self):
         pass
 
-class Potion:
+    def grabReagent(self, name):
+        pass
+
+    def cleanHerbs(self):
+        pass
+
+    def refineCatalysts(self):
+        pass
+
+class Potion(ABC):
     def __init__(self, name, stat, boost):
         self.__name = name
         self.__stat = stat
@@ -61,8 +80,9 @@ class Potion:
     def getBoost(self):
         return self.__boost
 
-    def setBoost(self):
-        pass
+    def setBoost(self, boost):
+        self.__boost = boost
+
 
 class SuperPotion(Potion):
     def __init__(self, name, stat, boost, herb, catalyst):
@@ -71,24 +91,32 @@ class SuperPotion(Potion):
         self.__catalyst = catalyst
 
     def calculateBoost(self):
-        pass
+        self.__boost = self.__herb.getPotency() + (self.__catalyst.getPotency() * self.__catalyst.getQuality()) * 1.5
+
+    def getHerb(self):
+        return self.__herb
+    
+    def getCatalyst(self):
+        return self.__catalyst
+
 
 class ExtremePotion(Potion):
-    def __init__(self, name, stat, boost, reagent, potion):
+    def __init__(self, name, stat, boost, reagent, superPotion):
         super().__init__(name, stat, boost)
         self.__reagent = reagent
-        self.__potion = potion
+        self.__superPotion = superPotion
 
     def calculateBoost(self):
-        pass
+        self.__boost = ((self.__reagent.getPotency() * self.__superPotion.getBoost()) * 3.0)
     
     def getReagent(self):
-        pass
+        return self.__reagent
 
     def getPotion(self):
         return self.__potion
 
-class Reagent:
+
+class Reagent(ABC):
     def __init__(self, name, potency):
         self.__name = name
         self.__potency = potency
@@ -104,7 +132,8 @@ class Reagent:
         return self.__potency
     
     def setPotency(self, potency):
-        pass
+        self.__potency = potency
+
 
 class Herb(Reagent):
     def __init__(self, name, potency, grimy):
@@ -112,13 +141,17 @@ class Herb(Reagent):
         self.__grimy = grimy
 
     def refine(self):
-        pass
+        if self.__grimy:
+            self.__potency *= 2.5
+            self.__grimy = False
+            print("{self.getName()} herb has been refined.")
 
     def getGrimy(self):
         return self.__grimy
     
-    def setGrimy(self):
-        pass
+    def setGrimy(self, grimy):
+        self.__grimy = grimy
+
 
 class Catalyst(Reagent):
     def __init__(self, name, potency, quality):
@@ -126,7 +159,13 @@ class Catalyst(Reagent):
         self.__quality = quality
 
     def refine(self):
-        pass
+        if self.__quality < 8.9:
+            self.__quality += 1.1
+            print("{self.getName()} catalyst quality has been increased to {self.getQuality()}.")
+        elif self.__quality >= 8.9:
+            self.__quality = 10
+            print("{self.getName()} catalyst has been refined to max quality.")
+
 
     def getQuality(self):
         return self.__quality
