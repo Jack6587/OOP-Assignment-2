@@ -28,7 +28,10 @@ class Alchemist:
         return self.__recipes
 
     def mixPotion(self, recipe):
-        pass
+        if recipe in self.__recipes:
+            primaryIngredient, secondaryIngredient = self.__recipes[recipe]
+            potion = self.__laboratory.mixPotion(recipe, primaryIngredient, secondaryIngredient)
+            return potion
 
     def drinkPotion(self, potion):
         pass
@@ -47,7 +50,19 @@ class Laboratory:
         self.__catalysts = []
 
     def mixPotion(self, name, type, stat, primaryIngredient, secondaryIngredient):
-        pass
+        for herb, amount in self.__herbs:
+            if herb.getName() == primaryIngredient and amount > 0:
+                primIngredient = herb
+        for catalyst, amount in self.__catalysts:
+            if catalyst.getName() == primaryIngredient and amount > 0:
+                primIngredient = catalyst
+
+        for catalyst, amount in self.__catalysts:
+            if catalyst.getName() == secondaryIngredient and amount > 0:
+                secIngredient = catalyst
+
+        
+        
 
     def addReagent(self, reagent, amount):
         if isinstance(reagent, Herb):
