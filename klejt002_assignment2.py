@@ -17,13 +17,13 @@ class Alchemist:
     def getRecipes(self):
         return self.__recipes
 
-    def mixPotion(self):
+    def mixPotion(self, recipe):
         pass
 
-    def drinkPotion(self):
+    def drinkPotion(self, potion):
         pass
 
-    def collectReagent(self):
+    def collectReagent(self, reagent, amount):
         pass
 
     def refineReagents(self):
@@ -36,7 +36,7 @@ class Laboratory:
         self.__herbs = []
         self.__catalysts = []
 
-    def mixPotion(self):
+    def mixPotion(self, name, type, stat, primaryIngredient, secondaryIngredient):
         pass
 
     def addReagent(self):
@@ -70,6 +70,9 @@ class SuperPotion(Potion):
         self.__herb = herb
         self.__catalyst = catalyst
 
+    def calculateBoost(self):
+        pass
+
 class ExtremePotion(Potion):
     def __init__(self, name, stat, boost, reagent, potion):
         super().__init__(name, stat, boost)
@@ -100,7 +103,7 @@ class Reagent:
     def getPotency(self):
         return self.__potency
     
-    def setPotency(self):
+    def setPotency(self, potency):
         pass
 
 class Herb(Reagent):
