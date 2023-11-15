@@ -10,7 +10,7 @@ This is my own work as defined by the University's Academic Misconduct Policy.
 from abc import ABC, abstractmethod
 
 class Alchemist:
-    def __init__(self, attack, strength, defence, magic, ranged, necromancy, laboratory):
+    def __init__(self, attack, strength, defence, magic, ranged, necromancy):
         if not all(0 <= stat <= 100 for stat in [attack, strength, defence, magic, ranged, necromancy]):
             raise ValueError("All stats must be between 0 and 100.")
         
@@ -21,8 +21,21 @@ class Alchemist:
         self.__ranged = ranged
         self.__necromancy = necromancy
         
-        self.__laboratory = laboratory
-        self.__recipes = {}
+        self.__laboratory = Laboratory()
+        self.__recipes = {
+            "Super Attack": ("Irit", "Eye of Newt"),
+            "Super Strength": ("Kwuarm", "Limpwurt Root"),
+            "Super Defence": ("Cadantine", "White Berries"),
+            "Super Magic": ("Lantadyme", "Potato Cactus"),
+            "Super Ranging": ("Dwarf Weed", "Wine of Zamorak"),
+            "Super Necromancy": ("Arbuck", "Blood of Orcus"),
+            "Extreme Attack": ("Avantoe", "Super Attack"),
+            "Extreme Strength": ("Dwarf Weed", "Super Strength"),
+            "Extreme Defence": ("Lantadyme", "Super Defence"),
+            "Extreme Magic": ("Ground Mud Rune", "Super Magic"),
+            "Extreme Ranging": ("Grenwall Spike", "Super Ranging"),
+            "Extreme Necromancy": ("Ground Miasma Rune", "Super Necromancy"),
+        }
 
     def getLaboratory(self):
         return self.__laboratory
@@ -176,9 +189,9 @@ class Reagent(ABC):
 
 
 class Herb(Reagent):
-    def __init__(self, name, potency, grimy):
+    def __init__(self, name, potency):
         super().__init__(name, potency)
-        self.__grimy = grimy
+        self.__grimy = True
 
     def refine(self):
         if self.__grimy:
