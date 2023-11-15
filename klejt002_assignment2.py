@@ -10,10 +10,10 @@ This is my own work as defined by the University's Academic Misconduct Policy.
 from abc import ABC, abstractmethod
 
 class Alchemist:
-    def __init__(self, attack, strength, defense, magic, ranged, necromancy, laboratory):
+    def __init__(self, attack, strength, defence, magic, ranged, necromancy, laboratory):
         self.__attack = max(0, min(attack, 100))
         self.__strength = max(0, min(strength, 100))
-        self.__defense = max(0, min(defense, 100))
+        self.__defence = max(0, min(defence, 100))
         self.__magic = max(0, min(magic, 100))
         self.__ranged = max(0, min(ranged, 100))
         self.__necromancy = max(0, min(necromancy, 100))
@@ -34,13 +34,25 @@ class Alchemist:
             return potion
 
     def drinkPotion(self, potion):
-        pass
+        if potion.getStat() == "attack":
+            self.__attack = min(self.__attack + potion.getBoost(), 100)
+        if potion.getStat() == "strength":
+            self.__strength = min(self.__strength + potion.getBoost(), 100)
+        if potion.getStat() == "defence":
+            self.__defence = min(self.__defence + potion.getBoost(), 100)
+        if potion.getStat() == "magic":
+            self.__magic = min(self.__magic + potion.getBoost(), 100)
+        if potion.getStat() == "ranged":
+            self.__ranged = min(self.__ranged + potion.getBoost(), 100)
+        if potion.getStat() == "necromancy":
+            self.__necromancy = min(self.__necromancy + potion.getBoost(), 100)
 
     def collectReagent(self, reagent, amount):
         self.__laboratory.addReagent(reagent, amount)
 
     def refineReagents(self):
-        pass
+        self.__laboratory.cleanHerbs()
+        self.__laboratory.refineCatalysts()
 
 
 class Laboratory:
@@ -60,9 +72,6 @@ class Laboratory:
         for catalyst, amount in self.__catalysts:
             if catalyst.getName() == secondaryIngredient and amount > 0:
                 secIngredient = catalyst
-
-        
-        
 
     def addReagent(self, reagent, amount):
         if isinstance(reagent, Herb):
