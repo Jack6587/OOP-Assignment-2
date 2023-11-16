@@ -68,32 +68,53 @@ class Alchemist:
         """Mixes a potion for a provided recipe name. This utilise the laboratory function mixPotion"""
         if recipe in self.__recipes:
             primaryIngredient, secondaryIngredient = self.__recipes[recipe]
-            potion = self.__laboratory.mixPotion(recipe, primaryIngredient, secondaryIngredient)
+            potionType = "SuperPotion"
+
+            if "Attack" in recipe:
+                stat = "attack"
+            elif "Strength" in recipe:
+                stat = "strength"
+            elif "Defence" in recipe:
+                stat = "defence"
+            elif "Magic" in recipe:
+                stat = "magic"
+            elif "Ranging" in recipe:
+                stat = "ranged"
+            elif "Necromancy" in recipe:
+                stat = "necromancy"
+
+            potion = self.__laboratory.mixPotion(recipe, potionType, stat, primaryIngredient, secondaryIngredient)
             return potion
 
     def drinkPotion(self, potion):
         """Here the alchemist drinks a potion provided by the user. Based on the potion they drink, their attributes can increase"""
         if potion.getStat() == "attack":
             self.__attack = min(self.__attack + potion.getBoost(), 100)
+            print("My attack has been increased!")
         if potion.getStat() == "strength":
             self.__strength = min(self.__strength + potion.getBoost(), 100)
+            print("My strength has been increased!")
         if potion.getStat() == "defence":
             self.__defence = min(self.__defence + potion.getBoost(), 100)
+            print("My defence has been increased!")
         if potion.getStat() == "magic":
             self.__magic = min(self.__magic + potion.getBoost(), 100)
+            print("My magic has been increased!")
         if potion.getStat() == "ranged":
             self.__ranged = min(self.__ranged + potion.getBoost(), 100)
+            print("My range has increased!")
         if potion.getStat() == "necromancy":
             self.__necromancy = min(self.__necromancy + potion.getBoost(), 100)
+            print("My necromancy ability has been increased!")
 
     def collectReagent(self, reagent, amount):
         """Adds an "amount" of a certain reagent to the laboratory. Use of the function addReagent here. Takes reagent and amount as parameters"""
+        reagent.refine()
         self.__laboratory.addReagent(reagent, amount)
 
     def refineReagents(self):
         """Refines both herbs and catalysts using functions from the Catalyst and Herb classes. Refining increases the quality"""
-        self.__laboratory.cleanHerbs()
-        self.__laboratory.refineCatalysts()
+        print("Reagents have been refined")
 
 
 class Laboratory:
@@ -122,8 +143,8 @@ class Laboratory:
         It takes a name, type (of potion), a stat, and two ingredients based on the assignment specs
         
         """
-        primaryIngredient = self.grabReagent(namePrimaryIngredient)[0]
-        secondaryIngredient = self.grabReagent(nameSecondaryIngredient)[0]
+        primaryIngredient = self.addReagent(namePrimaryIngredient, 1)
+        secondaryIngredient = self.addReagent(nameSecondaryIngredient, 1)
 
         if not primaryIngredient or not secondaryIngredient:
             print("An ingredient or two is missing")
@@ -133,7 +154,7 @@ class Laboratory:
 
         if potionType == "SuperPotion":
             potion = SuperPotion(name, stat, 0, primaryIngredient, secondaryIngredient)
-        elif potionType == "ExtremePotion":
+        elif potionType == "ExtremePotion" and isinstance(secondaryIngredient, SuperPotion):
             potion = ExtremePotion(name, stat, 0, primaryIngredient, secondaryIngredient)
 
         if potion:
@@ -146,34 +167,16 @@ class Laboratory:
 
     def addReagent(self, reagent, amount):
         if isinstance(reagent, Herb):
-            self.__herbs.append((reagent, amount))
+            self.__herbs[reagent.getName()] = reagent
         elif isinstance(reagent, Catalyst):
-            self.__catalysts.append((reagent, amount))
+            self.__catalysts[reagent.getName()] = reagent
 
-    def grabReagent(self, name):
-        for herb, amount in self.__herbs:
-            if herb.getName() == name:
-                return herb, amount
-            
-        for catalyst, amount in self.__catalysts:
-            if catalyst.getName() == name:
-                return catalyst, amount
-
-    def cleanHerbs(self):
-        for h in range(len(self.__herbs)):
-            herb, amount = self.__herbs[h]
-            herb.refine()
-
-    def refineCatalysts(self):
-        for c in range(len(self.__catalysts)):
-            catalyst, amount = self.__catalysts[c]
-            catalyst.refine()
 
 class Potion(ABC):
     def __init__(self, name, stat, boost):
         self.__name = name
         self.__stat = stat
-        self.__boost = boost
+        self.__boost = None
 
     @abstractmethod
     def calculateBoost(self):
@@ -190,6 +193,9 @@ class Potion(ABC):
 
     def setBoost(self, boost):
         self.__boost = boost
+
+    name = property(getName)
+    boost = property(getBoost, setBoost)
 
 
 class SuperPotion(Potion):
@@ -209,13 +215,13 @@ class SuperPotion(Potion):
 
 
 class ExtremePotion(Potion):
-    def __init__(self, name, stat, boost, reagent, superPotion):
+    def __init__(self, name, stat, boost, reagent, potion):
         super().__init__(name, stat, boost)
         self.__reagent = reagent
-        self.__superPotion = superPotion
+        self.__potion = potion
 
     def calculateBoost(self):
-        self.setBoost(round((self.__reagent.getPotency() * self.__superPotion.getBoost()) * 3.0, 2))
+        self.setBoost(round((self.__reagent.getPotency() * self.__potion.getBoost()) * 3.0, 2))
     
     def getReagent(self):
         return self.__reagent
@@ -250,9 +256,8 @@ class Herb(Reagent):
 
     def refine(self):
         if self.__grimy:
-            self.__potency *= 2.5
+            self._Reagent__potency *= 2.5
             self.__grimy = False
-            print(f"{self.getName()} herb has been refined.")
 
     def getGrimy(self):
         return self.__grimy
