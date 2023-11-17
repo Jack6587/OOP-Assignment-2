@@ -45,18 +45,18 @@ class Alchemist:
         
         self.__laboratory = Laboratory()
         self.__recipes = {
-            'Super Attack': ('SuperPotion', 'Attack', 'Irit', 'Eye of Newt'),
-            'Super Strength': ('SuperPotion', 'Strength', 'Kwuarm', 'Limpwurt Root'),
-            'Super Defence': ('SuperPotion', 'Defence', 'Cadantine', 'White Berries'),
-            'Super Magic': ('SuperPotion', 'Magic', 'Lantadyme', 'Potato Cactus'),
-            'Super Ranging': ('SuperPotion', 'Ranged', 'Dwarf Weed', 'Wine of Zamorak'),
-            'Super Necromancy': ('SuperPotion', 'Necromancy', 'Arbuck', 'Blood of Orcus'),
-            'Extreme Attack': ('ExtremePotion', 'Attack', 'Avantoe', 'Super Attack'),
-            'Extreme Strength': ('ExtremePotion', 'Strength', 'Dwarf Weed', 'Super Strength'),
-            'Extreme Defence': ('ExtremePotion', 'Defence', 'Lantadyme', 'Super Defence'),
-            'Extreme Magic': ('ExtremePotion', 'Magic', 'Ground Mud Rune', 'Super Magic'),
-            'Extreme Ranging': ('ExtremePotion', 'Ranged', 'Grenwall Spike', 'Super Ranging'),
-            'Extreme Necromancy': ('ExtremePotion', 'Necromancy', 'Ground Miasma Rune', 'Super Necromancy'),
+            "Super Attack": ("SuperPotion", "Attack", "Irit", "Eye of Newt"),
+            "Super Strength": ("SuperPotion", "Strength", "Kwuarm", "Limpwurt Root"),
+            "Super Defence": ("SuperPotion", "Defence", "Cadantine", "White Berries"),
+            "Super Magic": ("SuperPotion", "Magic", "Lantadyme", "Potato Cactus"),
+            "Super Ranging": ("SuperPotion", "Ranged", "Dwarf Weed", "Wine of Zamorak"),
+            "Super Necromancy": ("SuperPotion", "Necromancy", "Arbuck", "Blood of Orcus"),
+            "Extreme Attack": ("ExtremePotion", "Attack", "Avantoe", "Super Attack"),
+            "Extreme Strength": ("ExtremePotion", "Strength", "Dwarf Weed", "Super Strength"),
+            "Extreme Defence": ("ExtremePotion", "Defence", "Lantadyme", "Super Defence"),
+            "Extreme Magic": ("ExtremePotion", "Magic", "Ground Mud Rune", "Super Magic"),
+            "Extreme Ranging": ("ExtremePotion", "Ranged", "Grenwall Spike", "Super Ranging"),
+            "Extreme Necromancy": ("ExtremePotion", "Necromancy", "Ground Miasma Rune", "Super Necromancy"),
         }
 
     def getLaboratory(self):
@@ -378,35 +378,3 @@ class Catalyst(Reagent):
         return self.__quality
     
     quality = property(getQuality)
-
-alchemist = Alchemist(72, 35, 92, 66, 99, 100)
-
-alchemist.collectReagent(Herb("Irit", 1.0), 1)
-alchemist.collectReagent(Herb("Kwuarm",1.2), 1)
-alchemist.collectReagent(Herb("Cadantine", 1.5), 1)
-alchemist.collectReagent(Herb("Lantadyme", 2.0), 1)
-alchemist.collectReagent(Herb("Dwarf Weed", 2.5), 1)
-alchemist.collectReagent(Herb("Arbuck", 2.6), 1)
-alchemist.collectReagent(Herb("Avantoe", 3.0), 1)
-alchemist.collectReagent(Herb("Torstol", 4.5), 1)
-
-alchemist.collectReagent(Catalyst("Eye of Newt", 4.3, 1.0), 1)
-alchemist.collectReagent(Catalyst("Limpwurt Root", 3.6, 1.7), 1)
-alchemist.collectReagent(Catalyst("White Berries", 1.2, 2.0), 1)
-alchemist.collectReagent(Catalyst("Potato Cactus", 7.3, 0.1), 1)
-alchemist.collectReagent(Catalyst("Wine of Zamorak", 1.7, 5.0), 1)
-alchemist.collectReagent(Catalyst("Blood of Orcus", 4.5, 2.2), 1)
-alchemist.collectReagent(Catalyst("Ground Mud Rune", 2.1, 6.7), 1)
-alchemist.collectReagent(Catalyst("Grenwall Spike", 6.3, 4.9), 1)
-alchemist.collectReagent(Catalyst("Ground Miasma Rune",3.3, 5.2), 1)
-
-alchemist.refineReagents()
-
-print("-" * 40 + "Mix Potions from Recipes" + "-" * 40)
-for recipe in alchemist.recipes:
-    alchemist.mixPotion(recipe) 
-
-print("-" * 40 + "Drink Potions" + "-" * 40)
-for potion in alchemist.laboratory.potions:
-    print(f"\n{potion.name} Boost:", potion.boost)
-    alchemist.drinkPotion(potion)
