@@ -1,11 +1,12 @@
-'''
+"""
 File: klejt002_assignment.py
 Description: This Python module reflects the functions of an RPG game. The main focus is that of an alchemist that belongs to a laboratory, who can mix and drink potions.
 Author: Jack Klenke
 StudentID: 110349473
 EmailID: klejt002
 This is my own work as defined by the University's Academic Misconduct Policy.
-'''
+"""
+
 
 from abc import ABC, abstractmethod
 
@@ -17,15 +18,15 @@ class Alchemist:
     ---------
     All int attributes must be between 0 and 100.
     attack : int
-        number that represents the alchemist's attack power
+        Number that represents the alchemist's attack power
     strength : int
-        number that represents the alchemist's strength level. 
+        Number that represents the alchemist's strength level. 
     defence : int
-        number that represents the alchemist's defence stats.
+        Number that represents the alchemist's defence stats.
     magic : int
-        number that represents the alchemist's magic ability.
+        Number that represents the alchemist's magic ability.
     ranged : int
-        number that represents the alchemisst's ranged capabilities.
+        Number that represents the alchemisst's ranged capabilities.
     laboratory : (Laboratory)
         This references the laboratory class, that is owned by the alchemist.
     recipes : dictionary
@@ -58,22 +59,16 @@ class Alchemist:
             'Extreme Necromancy': ('ExtremePotion', 'Necromancy', 'Ground Miasma Rune', 'Super Necromancy'),
         }
 
-
     def getLaboratory(self):
         return self.__laboratory
-    
-    laboratory = property(getLaboratory)
     
     def getRecipes(self):
         return self.__recipes
     
-    recipes = property(getRecipes)
-
     def mixPotion(self, recipe):
         """Mixes a potion for a provided recipe name. This utilise the laboratory function mixPotion"""
         type, stat, primaryIngredient, secondaryIngredient = self.__recipes[recipe]
         self.laboratory.mixPotion(recipe, type, stat, primaryIngredient, secondaryIngredient)
-
 
     def drinkPotion(self, potion):
         """Here the alchemist drinks a potion provided by the user. Based on the potion they drink, their attributes can increase, utilising the boost and stat properties"""
@@ -114,6 +109,9 @@ class Alchemist:
             herb.refine()
         for catalyst in self.laboratory.catalysts:
             catalyst.refine()
+    
+    laboratory = property(getLaboratory)
+    recipes = property(getRecipes)
 
 
 class Laboratory:
@@ -151,8 +149,8 @@ class Laboratory:
                 if catalyst.name == secondaryIngredient:
                     secondaryIngredientObject = catalyst
 
-                newPotion = SuperPotion(name, stat, primaryIngredientObject, secondaryIngredientObject)
-                print(f"*Subtle bubbling*... The Super {stat} potion finished brewing!")
+            newPotion = SuperPotion(name, stat, primaryIngredientObject, secondaryIngredientObject)
+            print(f"*Subtle bubbling*... The Super {stat} potion finished brewing!")
 
         if primaryIngredientObject == None:
             for catalyst in self.catalysts:
@@ -164,8 +162,8 @@ class Laboratory:
                 if potion.name == secondaryIngredient:
                     secondaryIngredientObject = potion
 
-                newPotion = ExtremePotion(name, stat, primaryIngredientObject, secondaryIngredientObject)
-                print(f"*Intense bubbling*... Boom, the Extreme {stat} potion almost exploded!")
+            newPotion = ExtremePotion(name, stat, primaryIngredientObject, secondaryIngredientObject)
+            print(f"*Intense bubbling*... Boom, the Extreme {stat} potion almost exploded!")
 
         newPotion.calculateBoost()
 
@@ -173,8 +171,8 @@ class Laboratory:
 
 
     def addReagent(self, reagent, amount):
-        """Adds a specific amount of a type of reagent to the laboratorty's herbs list """
-        while amount > 0:
+        """Adds a specific amount of a type of reagent to the laboratory's herbs list"""
+        while amount != 0:
             if isinstance(reagent, Herb):
                 self.herbs.append(reagent)
             elif isinstance(reagent, Catalyst):
@@ -196,6 +194,19 @@ class Laboratory:
 
 
 class Potion(ABC):
+    """
+    An abstract class that represents a general potion. Inherits from "abstract base class". Has two classes that inherit from it, with an abstract method that gets overriden in child classes "refine()"
+    
+    Attributes
+    ----------
+    name : str
+        String that represents the name of the potion
+    stat : str
+        The stat type that the potion would effect, such as Attack
+    boost : int
+        Number that represents the boost value the potion could add to the stat type, Initialised as 0
+
+    """
     def __init__(self, name, stat):
         self.__name = name
         self.__stat = stat
@@ -203,6 +214,7 @@ class Potion(ABC):
 
     @abstractmethod
     def calculateBoost(self):
+        """In its current state, does nothing. Designed to be overridden."""
         pass
 
     def getName(self):
@@ -223,12 +235,23 @@ class Potion(ABC):
 
 
 class SuperPotion(Potion):
+    """
+    A class that inherits from potion. Represents SuperPotion, that utilises herb and catalyst to calculate boost.
+
+    Attributes
+    ----------
+    herb : Herb
+        This is the primary ingredient of the SuperPotion potion, and takes an instance of the herb class
+    catalyst : Catalyst
+        This is the secondary ingredient of the SuperPotion potion, that takes an instance of the catalyst class
+    """
     def __init__(self, name, stat, herb, catalyst):
         super().__init__(name, stat)
         self.__herb = herb
         self.__catalyst = catalyst
 
     def calculateBoost(self):
+        """Calculates the boost using the formula "potency of its herb + (potency of its catalyst * quality of its catalyst) * 1.5". Utilises the potency property of Reagent class which uses getPotency and setPotency, and the quality property (getQuality) of Catalyst class"""
         self.boost = self.herb.potency + (self.catalyst.potency * self.catalyst.quality) * 1.5
 
     def getHerb(self):
@@ -242,12 +265,23 @@ class SuperPotion(Potion):
 
 
 class ExtremePotion(Potion):
+    """
+    Similar to SuperPotion, inherits from the Potion class. It represents ExtremePotion, which takes the ingredients reagent and potion as parameters to be created.
+
+    Attributes
+    ----------
+    reagent : Reagent
+        The primary ingredient of ExtremePotion, takes an instance of Reagent
+    potion : Potion
+        The secondary ingredient of SuperPotion, is an instance of Potion
+    """
     def __init__(self, name, stat, reagent, potion):
         super().__init__(name, stat)
         self.__reagent = reagent
         self.__potion = potion
 
     def calculateBoost(self):
+        """Calculates the boost using the formula "(potency of its reagent * boost value of its super potion) * 3.0". Utilises the potency property of Reagent class and the boost property of Potion class, which uses getBoost and setBoost"""        
         self.boost = (self.reagent.potency * self.potion.boost) * 3.0
 
     def getReagent(self):
@@ -261,12 +295,23 @@ class ExtremePotion(Potion):
 
 
 class Reagent(ABC):
+    """
+    Like the Potion class, this is an abstract class that inherits from "abstract base class". It represents a Reagent, which can be either a Herb or a Catalyst. It is used in mixing a potion
+
+    Attributes
+    ----------
+    name : str
+        Represents the name of the reagent
+    potency : float
+        Demonstrates the level of potency. Can be modified in child classes
+    """
     def __init__(self, name, potency):
         self.__name = name
         self.__potency = potency
 
     @abstractmethod
     def refine(self):
+        """Abstract method that will refine a reagent dependent on the child class"""
         pass
 
     def getName(self):
@@ -283,11 +328,19 @@ class Reagent(ABC):
 
 
 class Herb(Reagent):
+    """This is a type of reagent (inherits from reagent) that is used in potion making. It has its own specific refine ability.
+    
+    Attributes
+    ----------
+    grimy : bool
+        This attribute represents the status of "grimy", which theoretically impacts the potency of the herb. It is initially set to "True"
+    """
     def __init__(self, name, potency):
         super().__init__(name, potency)
         self.__grimy = True
 
     def refine(self):
+        """The refine function in herb checks if the herb is grimy. If self.__grimy is true, it multiplies its potency by 2.5 and changes grimy to "False" """
         if self.__grimy:
             self.potency *= 2.5
             self.grimy = False
@@ -302,15 +355,24 @@ class Herb(Reagent):
 
 
 class Catalyst(Reagent):
+    """Catalyst is another type of reagent that is used to make potions. Its refine ability differs from herb - this is an example of polymorphism, where the refine() method has many forms
+    
+    Attributes
+    ----------
+    quality : float
+        Quality works similarly to potency in the Herb class, where it changes based on whether it is refined or not
+    """
     def __init__(self, name, potency, quality):
         super().__init__(name, potency)
         self.__quality = quality
 
     def refine(self):
+        """This determines the quality of the catalyst when it is refined. Note that it maxes out at 10 and prints this out to inform the user. When the quality is below 8.9, it increases by 1.1 when refined"""
         if self.__quality < 8.9:
             self.__quality += 1.1
         elif self.__quality >= 8.9:
             self.__quality = 10
+            print("This cannot be refined any further")
 
     def getQuality(self):
         return self.__quality
